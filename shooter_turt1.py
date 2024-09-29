@@ -8,7 +8,7 @@ import button
 mixer.init()
 pygame.init()
 
-SCREEN_WIDTH = 600
+SCREEN_WIDTH = 800
 SCREEN_HEIGHT = int(SCREEN_WIDTH*0.8)
 
 screen = pygame.display.set_mode((SCREEN_WIDTH,SCREEN_HEIGHT))
@@ -28,7 +28,7 @@ TILE_TYPES = 21
 MAX_LEVELS = 4
 screen_scroll = 0
 bg_scroll = 0
-level = 1
+level = 3
 start_game = False
 start_intro = False
 
@@ -206,7 +206,7 @@ class Soldier(pygame.sprite.Sprite):
 
         #jump
         if self.jump == True and self.in_air == False:
-            self.vel_y = -11
+            self.vel_y = -13
             self.jump = False
             self.in_air = True
         
@@ -216,26 +216,27 @@ class Soldier(pygame.sprite.Sprite):
             self.vel_y
         dy += self.vel_y
 
-        #check for collison
+
         for tile in world.obstacle_list:
-             #check collison in the x direction
-             if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
-                  dx = 0
-                  #if the ai has hit a wall then make it turn around
-                  if self.char_type == 'enemy':
-                       self.direction *= -1
-                       self.move_counter = 0
-             #check for collison in the y direction
-             if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
-                  #check if below th ground, ie jumping
-                  if self.vel_y < 0:
-                       self.vel_y = 0
-                       dy = tile[1].bottom - self.rect.top
-                    #check if above the ground, ie falling
-                  elif self.vel_y >= 0:
-                       self.vel_y = 0
-                       self.in_air = False
-                       dy = tile[1].top - self.rect.bottom
+              #check collison in the x direction
+              if tile[1].colliderect(self.rect.x + dx, self.rect.y, self.width, self.height):
+                   dx = 0
+                   #if the ai has hit a wall then make it turn around
+               #     if self.char_type == 'enemy':
+               #           print(self.direction)
+               #           self.direction *= -1
+               #           self.move_counter = 0
+              #check for collison in the y direction
+              if tile[1].colliderect(self.rect.x, self.rect.y + dy, self.width, self.height):
+                   #check if below th ground, ie jumping
+                   if self.vel_y < 0:
+                        self.vel_y = 0
+                        dy = tile[1].bottom - self.rect.top
+                     #check if above the ground, ie falling
+                   elif self.vel_y >= 0:
+                        self.vel_y = 0
+                        self.in_air = False
+                        dy = tile[1].top - self.rect.bottom
 
         #check for collision with water
         if pygame.sprite.spritecollide(self, water_group, False):
@@ -257,6 +258,7 @@ class Soldier(pygame.sprite.Sprite):
         #update rectangle position
         self.rect.x += dx
         self.rect.y += dy
+        
 
         #update scroll based on player positions
         if self.char_type == 'player':
@@ -269,6 +271,7 @@ class Soldier(pygame.sprite.Sprite):
 
 
     def shoot(self):
+         print(self.direction)
          if self.shoot_cooldown == 0 and self.ammo > 0:
           self.shoot_cooldown = 20
           bullet = Bullet(self.rect.centerx + (0.75 * self.rect.size[0] * self.direction),self.rect.centery,self.direction)
@@ -279,8 +282,26 @@ class Soldier(pygame.sprite.Sprite):
 
 
     def ai(self):
+         
+     #     if self.alive and player.alive:
+     #          if random.randint(1, 10) == 1:
+                   
+     #      #     if self.idling == False:
+     #           if self.direction == 1:
+     #               ai_moving_right = True
+     #           else:
+     #               ai_moving_right = False
+     #           ai_moving_left = not ai_moving_right
+     #           self.move(ai_moving_left, ai_moving_right)
+     #           self.update_action(1)#1: run
+     #           self.move_counter += 1
+
+     #           if self.move_counter > TILE_SIZE:
+     #               self.direction *= -1
+     #               self.move_counter *= -1
          if self.alive and player.alive:
               if self.idling == False and random.randint(1, 200) == 1:
+                   print('true')
                    self.update_action(0)#0 is idle
                    self.idling = True
                    self.idling_counter = 50
@@ -289,6 +310,7 @@ class Soldier(pygame.sprite.Sprite):
                    #stop runing and face the player
                    self.update_action(0)#0: idle
                    #shoot
+                   print('run shoot')
                    self.shoot()
               else:
                if self.idling == False:
@@ -302,7 +324,6 @@ class Soldier(pygame.sprite.Sprite):
                     self.move_counter += 1
                     #update ai vision as the enemy moves
                     self.vision.center = (self.rect.centerx + 75 * self.direction, self.rect.centery)
-                    pygame.draw.rect(screen, RED, self.vision)
                     if self.move_counter > TILE_SIZE:
                          self.direction *= -1
                          self.move_counter *= -1
@@ -318,7 +339,7 @@ class Soldier(pygame.sprite.Sprite):
     def update_animation(self):
          #update animation
          ANIMATION_COOLDOWN = 100
-
+         
          #update image depending on current frame
          self.image = self.animation_list[self.action][self.frame_index]
 
@@ -379,7 +400,7 @@ class World():
                               player = Soldier('player', x * TILE_SIZE, y * TILE_SIZE, .9 , 5, 20, 5)
                               health_bar = HealthBar(10, 10, player.health, player.health)
                          elif tile == 16:#create enemies
-                              enemy = Soldier('enemy', x * TILE_SIZE, y * TILE_SIZE, 1.65 , 2, 20, 0)
+                              enemy = Soldier('enemy', x * TILE_SIZE, y * TILE_SIZE, 1.65 , 2, 1000, 0)
                               enemy_group.add(enemy)
                          elif tile == 17:#create ammo box
                               item_box = ItemBox("Ammo", x * TILE_SIZE, y * TILE_SIZE)
@@ -534,6 +555,7 @@ class Grenade(pygame.sprite.Sprite):
                     #check if above the ground, ie falling
                     elif self.vel_y >= 0:
                        self.vel_y = 0
+                       self.in_air = False
                        dy = tile[1].top - self.rect.bottom
 
           #update grenades postions

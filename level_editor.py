@@ -70,7 +70,7 @@ def draw_text(text, font, text_col, x, y):
 
 #create function for drawing background
 def draw_bg():
-    screen.fill(GREEN)
+    screen.fill(RED)
     width = sky_img.get_width()
     for x in range(4):
         screen.blit(sky_img, ((x * width) - scroll * 0.5, 0))
@@ -93,7 +93,6 @@ def draw_world():
          for x, tile in enumerate(row):
              if tile >= 0:
                  screen.blit(img_list[tile], (x * TILE_SIZE - scroll, y * TILE_SIZE))
-
 
 
 
@@ -145,7 +144,7 @@ while run:
 
     #draw tile panel and tiles
     pygame.draw.rect(screen, GREEN, (SCREEN_WIDTH, 0, SIDE_MARGIN, SCREEN_HEIGHT))
-
+    pygame.draw.line(screen, RED, (SCREEN_WIDTH, SCREEN_HEIGHT ), (SCREEN_WIDTH + SIDE_MARGIN, SCREEN_HEIGHT))
     #choose a tile
     button_count = 0
     for button_count, i in enumerate(button_list):
