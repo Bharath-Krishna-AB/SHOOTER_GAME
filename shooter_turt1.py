@@ -25,10 +25,10 @@ ROWS = 16
 COLS = 150
 TILE_SIZE = SCREEN_HEIGHT // ROWS
 TILE_TYPES = 21
-MAX_LEVELS = 4
+MAX_LEVELS = 4 
 screen_scroll = 0
 bg_scroll = 0
-level = 1
+level = 2 
 start_game = False
 start_intro = False
 
@@ -38,6 +38,7 @@ moving_right = False
 shoot = False
 grenade = False 
 grenade_thrown = False
+
 
 #load music and sounds
 pygame.mixer.music.load('audio/music2.mp3')
