@@ -70,7 +70,7 @@ def draw_text(text, font, text_col, x, y):
 
 #create function for drawing background
 def draw_bg():
-    screen.fill(RED)
+    screen.fill(GREEN)
     width = sky_img.get_width()
     for x in range(4):
         screen.blit(sky_img, ((x * width) - scroll * 0.5, 0))
