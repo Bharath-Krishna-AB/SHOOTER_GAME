@@ -28,7 +28,7 @@ TILE_TYPES = 21
 MAX_LEVELS = 4 
 screen_scroll = 0
 bg_scroll = 0
-level = 2 
+level = 1
 start_game = False
 start_intro = False
 
@@ -207,7 +207,7 @@ class Soldier(pygame.sprite.Sprite):
 
         #jump
         if self.jump == True and self.in_air == False:
-            self.vel_y = -13
+            self.vel_y = -14
             self.jump = False
             self.in_air = True
         
