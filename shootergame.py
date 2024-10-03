@@ -28,7 +28,7 @@ TILE_TYPES = 21
 MAX_LEVELS = 22
 screen_scroll = 0
 bg_scroll = 0
-level = 12
+level = 1
 start_game = False
 start_intro = False
 speed = 5
@@ -43,7 +43,7 @@ grenade_thrown = False
 
 #load music and sounds
 pygame.mixer.music.load('audio/music2.mp3')
-pygame.mixer.music.set_volume(0)
+pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1, 0.0, 5000)
 jump_fx = pygame.mixer.Sound('audio/jump.wav')
 jump_fx.set_volume(0.5)
@@ -53,6 +53,8 @@ grenade_fx = pygame.mixer.Sound('audio/grenade.wav')
 grenade_fx.set_volume(0.5)
 next_level_fx = pygame.mixer.Sound('audio/next_level.wav')
 next_level_fx.set_volume(0.5)
+click_fx = pygame.mixer.Sound('audio/click.mp3')
+click_fx.set_volume(0.5)
 
 
 
@@ -104,7 +106,6 @@ PINK = (235, 65, 54)
 font = pygame.font.SysFont('Futura', 30)
 
 def draw_text(text, font , text_col , x, y):
-     print(text)
      img = font.render(text , True, text_col)
      screen.blit(img, (x, y))
 
@@ -228,7 +229,6 @@ class Soldier(pygame.sprite.Sprite):
                    dx = 0
                    #if the ai has hit a wall then make it turn around
                #     if self.char_type == 'enemy':
-               #           print(self.direction)
                #           self.direction *= -1
                #           self.move_counter = 0
               #check for collison in the y direction
@@ -276,7 +276,6 @@ class Soldier(pygame.sprite.Sprite):
 
 
     def shoot(self):
-         print(self.direction)
          if self.shoot_cooldown == 0 and self.ammo > 0:
           self.shoot_cooldown = 20
           bullet = Bullet(self.rect.centerx + (0.75 * self.rect.size[0] * self.direction),self.rect.centery,self.direction)
@@ -287,26 +286,8 @@ class Soldier(pygame.sprite.Sprite):
 
 
     def ai(self):
-         
-     #     if self.alive and player.alive:
-     #          if random.randint(1, 10) == 1:
-                   
-     #      #     if self.idling == False:
-     #           if self.direction == 1:
-     #               ai_moving_right = True
-     #           else:
-     #               ai_moving_right = False
-     #           ai_moving_left = not ai_moving_right
-     #           self.move(ai_moving_left, ai_moving_right)
-     #           self.update_action(1)#1: run
-     #           self.move_counter += 1
-
-     #           if self.move_counter > TILE_SIZE:
-     #               self.direction *= -1
-     #               self.move_counter *= -1
          if self.alive and player.alive:
               if self.idling == False and random.randint(1, 200) == 1:
-                   print('true')
                    self.update_action(0)#0 is idle
                    self.idling = True
                    self.idling_counter = 50
@@ -315,7 +296,6 @@ class Soldier(pygame.sprite.Sprite):
                    #stop runing and face the player
                    self.update_action(0)#0: idle
                    #shoot
-                   print('run shoot')
                    self.shoot()
               else:
                if self.idling == False:
@@ -695,16 +675,16 @@ while run:
          draw_text("Press Q to throw grenade", font, WHITE, 10 , (SCREEN_HEIGHT - 30))
 
          #addbuttons
-         if start_button.draw(screen):            
+         if start_button.draw(screen):
+             click_fx.play()              
              start_game = True
              start_intro = True
          if exit_button.draw(screen):
+              click_fx.play()  
               run = False
     else:
           #update background
           draw_bg()
-          #draw world map
-          world.draw()
           #draw level number
           draw_text(f"LEVEL : {level}", font, WHITE, 10, 85)
           #show player health
@@ -717,6 +697,9 @@ while run:
           draw_text("GRENADES: ", font, WHITE, 10 ,60)
           for x in range(player.grenades):
                screen.blit(grenade_img, (135 + (x * 15), 60))
+          #draw world map
+          world.draw()
+
 
           player.update()
           player.draw()
@@ -790,6 +773,7 @@ while run:
                screen_scroll = 0
                if death_fade.fade():
                     if restart_button.draw(screen):
+                         click_fx.play()  
                          death_fade.fade_counter = 0
                          start_intro = True
                          bg_scroll = 0
