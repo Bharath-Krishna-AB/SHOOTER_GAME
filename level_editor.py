@@ -21,7 +21,7 @@ ROWS = 16
 MAX_COLS = 150
 TILE_SIZE = SCREEN_HEIGHT // ROWS
 TILE_TYPES = 21
-level = 1
+level = 13
 current_tile = 0
 scroll_left = False
 scroll_right = False
@@ -68,7 +68,7 @@ def draw_text(text, font, text_col, x, y):
     screen.blit(img, (x,y))
 
 
-#create function for drawing background
+#create function for drawing background 
 def draw_bg():
     screen.fill(GREEN)
     width = sky_img.get_width()
